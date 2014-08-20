@@ -1,1 +1,10 @@
 node_modules/
+bower_components/
+site/
+temp/
+.idea/
+*.swp
+.grunt/
+.~tmp/
+.~sass-cache/
+*.DS_Store*
