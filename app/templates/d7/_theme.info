@@ -1,0 +1,7 @@
+; $Id$
+name = <%= themeName %>
+description = <%= themeDesc %>
+core = 7.x
+
+<% if(cssFramework === 'bootstrap') { %> stylesheets[all][] = css/bootstrap.css <% } %>
+<% if(cssFramework === 'foundation') { %> stylesheets[all][] = css/foundation.css <% } %>
