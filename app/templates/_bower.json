@@ -1,6 +1,8 @@
 {
-  "name": "package",
-  "version": "0.0.0",
-  "dependencies": {}
+    "name": "<%= themeName %>",
+    "version": "0.0.0",
+    "dependencies": {
+        <% if(cssFramework === 'bootstrap') { %>"bootstrap-sass-official": "latest"<% } %>
+        <% if(cssFramework === 'foundation') { %>"foundation": "latest"<% } %>
+    }
 }
-
