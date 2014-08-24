@@ -4,6 +4,8 @@ var path = require('path');
 var yeoman = require('yeoman-generator');
 var yosay = require('yosay');
 
+var _ = require('lodash');
+
 var myUtils = require('../utils/utils');
 
 var DrupalThemeGenerator = yeoman.generators.Base.extend({
@@ -21,6 +23,17 @@ var DrupalThemeGenerator = yeoman.generators.Base.extend({
 
         var prompts = [
             {
+                type: 'input',
+                name: 'themeName',
+                message: 'Your theme name',
+                default: this.appname
+            },
+            {
+                type: 'input',
+                name: 'themeDesc',
+                message: 'Your theme description'
+            },
+            {
                 type: 'list',
                 name: 'drupalVersion',
                 message: 'Drupal version',
@@ -36,20 +49,6 @@ var DrupalThemeGenerator = yeoman.generators.Base.extend({
                 ]
             },
             {
-                type: 'input',
-                name: 'themeName',
-                message: 'Your theme name',
-                default: this.appname,
-                filter: function(userInput) {
-                    return myUtils.filterThemeName(userInput);
-                }
-            },
-            {
-                type: 'input',
-                name: 'themeDesc',
-                message: 'Your theme description'
-            },
-            {
                 type: 'confirm',
                 name: 'useGrunt',
                 message: 'Would you like to use Grunt as your task runner?',
@@ -59,12 +58,6 @@ var DrupalThemeGenerator = yeoman.generators.Base.extend({
                 type: 'confirm',
                 name: 'useGruntPlugins',
                 message: 'Would you like some help compressing your js, css and images?',
-                default: true
-            },
-            {
-                type: 'confirm',
-                name: 'useModernizr',
-                message: 'Would you like to include Modernizr?',
                 default: true
             },
             {
@@ -85,15 +78,35 @@ var DrupalThemeGenerator = yeoman.generators.Base.extend({
                         name: 'None'
                     }
                 ]
+            },
+            {
+                type: 'checkbox',
+                name: 'addFeatures',
+                message: 'Additional features?',
+                choices: [
+                    {
+                        value: 'modernizr',
+                        name: 'Use Modernizr (Loaded from cdnJs.com; But you can change that later from theme\'s template.php file.)'
+                    },
+                    {
+                        value: 'rtl',
+                        name: 'Right-to-Left Support (for Bootstrap or Foundation)'
+                    }
+                ]
             }
         ];
 
         this.prompt(prompts, function (props) {
             this.themeName = props.themeName;
+            this.themeNameSanitized = myUtils.filterThemeName(props.themeName);
             this.themeDesc = props.themeDesc;
+            this.drupalVersion = props.drupalVersion;
+            this.cssFramework = props.cssFramework;
             this.useGrunt = props.useGrunt;
             this.useGruntPlugins = props.useGruntPlugins;
-            this.useModernizr = props.useModernizr;
+            
+            this.featureModernizr = (_.indexOf(props.addFeatures, 'modernizr') != -1) ? true : false;
+            this.featureRtl = (_.indexOf(props.addFeatures, 'rtl') != -1) ? true : false;
 
             done();
         }.bind(this));
@@ -101,24 +114,65 @@ var DrupalThemeGenerator = yeoman.generators.Base.extend({
 
     writing: {
         app: function() {
-            this.dest.mkdir('app');
-            this.dest.mkdir('app/templates');
+            var _appFolder = this.themeNameSanitized;
+            
+            this.dest.mkdir(_appFolder);
+            this.dest.mkdir(_appFolder + '/templates');
+            this.dest.mkdir(_appFolder + '/scss');
+            this.dest.mkdir(_appFolder + '/css');
 
-            this.src.copy('_package.json', 'package.json');
-            this.src.copy('_bower.json', 'bower.json');
+            this.template('_package.json', _appFolder + '/package.json');
+            this.template('_bower.json', _appFolder + '/bower.json');
         },
 
         projectfiles: function() {
-            this.src.copy('editorconfig', '.editorconfig');
-            this.src.copy('jshintrc', '.jshintrc');
+            var _appFolder = this.themeNameSanitized;
+            
+            this.src.copy('bowerrc', _appFolder + '/.bowerrc');
+            this.src.copy('editorconfig', _appFolder + '/.editorconfig');
+            this.src.copy('jshintrc', _appFolder + '/.jshintrc');
+            
+            // do NOT copy compass config file if none cssFramework is selected.
+            if(this.cssFramework !== 'none')
+                this.src.copy('_config.rb', _appFolder + '/config.rb');
+            
+            // copy cssFramework .scss files
+            if(this.cssFramework === 'foundation') {
+                this.src.copy('scss/__foundation-settings.scss', _appFolder + '/scss/_foundation-settings.scss');
+                this.src.copy('scss/_foundation.scss', _appFolder + '/scss/foundation.scss');
+                if(this.featureRtl) {
+                    this.src.copy('scss/__foundation-settings-rtl.scss', _appFolder + '/scss/_foundation-settings-rtl.scss');
+                    this.src.copy('scss/_foundation-rtl.scss', _appFolder + '/scss/foundation-rtl.scss');
+                }
+            }
+            else if(this.cssFramework === 'bootstrap') {
+                this.src.copy('scss/_bootstrap.scss', _appFolder + '/scss/bootstrap.scss');
+                if(this.featureRtl) {
+                    this.src.copy('scss/_bootstrap-rtl.css', _appFolder + '/css/bootstrap-rtl.scss');
+                }
+            }
+            
+            
+            if(this.drupalVersion === 'drupal7') {
+                this.template('d7/_template.php', _appFolder + '/template.php');
+                if(this.cssFramework === 'foundation') {
+                    this.template('d7/_html-foundation.tpl.php', _appFolder + '/templates/html.tpl.php');
+                }
+                else if(this.cssFramework === 'bootstrap') {
+                    this.template('d7/_html-bootstrap.tpl.php', _appFolder + '/templates/html.tpl.php');
+                }
+                else {
+                    
+                }
+            }
         }
     },
 
     end: function() {
         if (!this.options['skip-install']) {
             // change directory before installing dependencies
-//            process.chdir(process.cwd() + '/' + this.projectName);
-
+            process.chdir(process.cwd() + '/' + this.themeNameSanitized);
+            
             this.installDependencies({
                 npm: true,
                 bower: true
