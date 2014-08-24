@@ -31,7 +31,8 @@ var DrupalThemeGenerator = yeoman.generators.Base.extend({
             {
                 type: 'input',
                 name: 'themeDesc',
-                message: 'Your theme description'
+                message: 'Your theme description',
+                default: 'None'
             },
             {
                 type: 'list',
@@ -154,6 +155,7 @@ var DrupalThemeGenerator = yeoman.generators.Base.extend({
             
             
             if(this.drupalVersion === 'drupal7') {
+                this.template('d7/_theme.info', _appFolder + '/' + _appFolder + '.info');
                 this.template('d7/_template.php', _appFolder + '/template.php');
                 if(this.cssFramework === 'foundation') {
                     this.template('d7/_html-foundation.tpl.php', _appFolder + '/templates/html.tpl.php');
