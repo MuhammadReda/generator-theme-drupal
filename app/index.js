@@ -42,11 +42,11 @@ var DrupalThemeGenerator = yeoman.generators.Base.extend({
                     {
                         value: 'drupal7',
                         name: 'Drupal 7'
-                    },
-                    {
-                        value: 'drupal8',
-                        name: 'Drupal 8'
-                    }
+                    }//,
+//                    {
+//                        value: 'drupal8',
+//                        name: 'Drupal 8'
+//                    }
                 ]
             },
             {
