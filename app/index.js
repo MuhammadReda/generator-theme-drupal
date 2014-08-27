@@ -129,6 +129,7 @@ var DrupalThemeGenerator = yeoman.generators.Base.extend({
         projectfiles: function() {
             var _appFolder = this.themeNameSanitized;
             
+            this.src.copy('gitignore', _appFolder + '/.gitignore');
             this.src.copy('bowerrc', _appFolder + '/.bowerrc');
             this.src.copy('editorconfig', _appFolder + '/.editorconfig');
             this.src.copy('jshintrc', _appFolder + '/.jshintrc');
