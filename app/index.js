@@ -98,8 +98,8 @@ var DrupalThemeGenerator = yeoman.generators.Base.extend({
         ];
 
         this.prompt(prompts, function (props) {
-            this.themeName = props.themeName;
-            this.themeNameSanitized = myUtils.filterThemeName(props.themeName);
+            this.themeName= myUtils.filterThemeName(props.themeName);
+            this.themeNameOriginal = props.themeName;
             this.themeDesc = props.themeDesc;
             this.drupalVersion = props.drupalVersion;
             this.cssFramework = props.cssFramework;
@@ -115,7 +115,7 @@ var DrupalThemeGenerator = yeoman.generators.Base.extend({
 
     writing: {
         app: function() {
-            var _appFolder = this.themeNameSanitized;
+            var _appFolder = this.themeName;
             
             this.dest.mkdir(_appFolder);
             this.dest.mkdir(_appFolder + '/templates');
@@ -127,7 +127,7 @@ var DrupalThemeGenerator = yeoman.generators.Base.extend({
         },
 
         projectfiles: function() {
-            var _appFolder = this.themeNameSanitized;
+            var _appFolder = this.themeName;
             
             this.src.copy('gitignore', _appFolder + '/.gitignore');
             this.src.copy('bowerrc', _appFolder + '/.bowerrc');
@@ -174,7 +174,7 @@ var DrupalThemeGenerator = yeoman.generators.Base.extend({
     end: function() {
         if (!this.options['skip-install']) {
             // change directory before installing dependencies
-            process.chdir(process.cwd() + '/' + this.themeNameSanitized);
+            process.chdir(process.cwd() + '/' + this.themeName);
             
             this.installDependencies({
                 npm: true,
