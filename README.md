@@ -1,4 +1,4 @@
-# generator-drupal-theme  [![Build Status](https://secure.travis-ci.org/MuhammadReda/generator-drupal-theme.png?branch=master)](https://travis-ci.org/MuhammadReda/generator-drupal-theme)
+# generator-theme-drupal  [![Build Status](https://secure.travis-ci.org/MuhammadReda/generator-theme-drupal.png?branch=master)](https://travis-ci.org/MuhammadReda/generator-drupal-theme)
 
 > [Yeoman](http://yeoman.io) generator
 
@@ -26,13 +26,13 @@ Yeoman travels light. He didn't pack any generators when he moved in. You can th
 To install generator-drupal-theme  from npm, run:
 
 ```bash
-npm install -g generator-drupal-theme
+npm install -g generator-theme-drupal
 ```
 
 Finally, initiate the generator:
 
 ```bash
-yo drupal-theme 
+yo theme-drupal 
 ```
 
 ### Getting To Know Yeoman
