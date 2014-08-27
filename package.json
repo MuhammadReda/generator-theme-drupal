@@ -1,5 +1,5 @@
 {
-  "name": "generator-drupal-theme",
+  "name": "generator-theme-drupal",
   "version": "0.0.1",
   "description": "Yeoman generator",
   "license": "MIT",
@@ -20,7 +20,10 @@
     "app"
   ],
   "keywords": [
-    "yeoman-generator"
+    "yeoman-generator",
+    "scaffold",
+    "drupal",
+    "drupal-theme"
   ],
   "dependencies": {
     "yeoman-generator": "^0.17.0",
