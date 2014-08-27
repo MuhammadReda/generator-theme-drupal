@@ -137,9 +137,8 @@ var DrupalThemeGenerator = yeoman.generators.Base.extend({
             // do NOT copy compass config file if none cssFramework is selected.
             if(this.cssFramework !== 'none')
                 this.src.copy('_config.rb', _appFolder + '/config.rb');
-            
             // copy cssFramework .scss files
-            if(this.cssFramework === 'foundation') {
+            else if(this.cssFramework === 'foundation') {
                 this.src.copy('scss/__foundation-settings.scss', _appFolder + '/scss/_foundation-settings.scss');
                 this.src.copy('scss/_foundation.scss', _appFolder + '/scss/foundation.scss');
                 if(this.featureRtl) {
