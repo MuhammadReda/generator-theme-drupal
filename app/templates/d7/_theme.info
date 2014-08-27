@@ -1,5 +1,5 @@
 ; $Id$
-name = <%= themeName %>
+name = <%= themeNameOriginal %>
 description = <%= themeDesc %>
 core = 7.x
 
